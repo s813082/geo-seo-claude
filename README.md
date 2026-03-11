@@ -47,6 +47,8 @@ Install for specific CLI targets:
 ./install.sh --cli copilot
 ```
 
+> Note: Gemini CLI support is currently experimental. If your CLI uses a custom config path, use `--base-dir`.
+
 ### Manual Install
 
 ```bash
@@ -196,6 +198,10 @@ Generates professional GEO reports in markdown or PDF format. PDF reports includ
 
 ```bash
 ./uninstall.sh
+
+# Or target a specific CLI home
+./uninstall.sh --cli gemini
+./uninstall.sh --cli copilot
 ```
 
 Or manually:

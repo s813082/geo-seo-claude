@@ -60,6 +60,22 @@ resolve_cli_dir() {
     esac
 }
 
+has_target_cli() {
+    case "$TARGET_CLI" in
+        claude) command -v claude &> /dev/null ;;
+        gemini) command -v gemini &> /dev/null ;;
+        copilot) has_copilot_cli ;;
+        *) return 1 ;;
+    esac
+}
+
+has_copilot_cli() {
+    command -v copilot &> /dev/null && return 0
+    command -v github-copilot-cli &> /dev/null && return 0
+    command -v gh &> /dev/null && gh copilot --help &> /dev/null && return 0
+    return 1
+}
+
 print_success() {
     echo -e "${GREEN}✓ $1${NC}"
 }
@@ -149,14 +165,24 @@ main() {
     print_success "Python found: $($PYTHON_CMD --version)"
 
     # Check for target CLI
-    CLI_COMMAND="$TARGET_CLI"
-    CLI_INSTALL_HINT="Install your selected CLI and ensure '${CLI_COMMAND}' is in PATH."
-    if [ "$TARGET_CLI" = "claude" ]; then
-        CLI_INSTALL_HINT="Install: npm install -g @anthropic-ai/claude-code"
-    fi
-    if ! command -v "$CLI_COMMAND" &> /dev/null; then
-        print_warning "${TARGET_CLI^} CLI not found in PATH."
-        echo "  This tool works best when ${TARGET_CLI^} CLI is available."
+    CLI_EXECUTABLE="$TARGET_CLI"
+    CLI_DISPLAY_NAME="${TARGET_CLI^}"
+    CLI_INSTALL_HINT="Install your selected CLI and ensure '${CLI_EXECUTABLE}' is in PATH."
+    case "$TARGET_CLI" in
+        claude)
+            CLI_INSTALL_HINT="Install: npm install -g @anthropic-ai/claude-code"
+            ;;
+        gemini)
+            CLI_INSTALL_HINT="Gemini CLI support is experimental; ensure 'gemini' is in PATH or use --base-dir."
+            ;;
+        copilot)
+            CLI_DISPLAY_NAME="Copilot"
+            CLI_INSTALL_HINT="Install GitHub Copilot CLI (or gh with Copilot) and ensure one of: copilot, github-copilot-cli, gh."
+            ;;
+    esac
+    if ! has_target_cli; then
+        print_warning "${CLI_DISPLAY_NAME} CLI not found in PATH."
+        echo "  Installation can continue, but running /geo commands requires ${CLI_DISPLAY_NAME} CLI."
         echo "  ${CLI_INSTALL_HINT}"
         echo ""
         if [ "$INTERACTIVE" = true ]; then
@@ -169,7 +195,7 @@ main() {
             print_info "Non-interactive mode — continuing anyway..."
         fi
     else
-        print_success "${TARGET_CLI^} CLI found"
+        print_success "${CLI_DISPLAY_NAME} CLI found"
     fi
 
     # ---- Create Directories ----

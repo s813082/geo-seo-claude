@@ -2,14 +2,15 @@
 set -euo pipefail
 
 # ============================================================
-# GEO-SEO Claude Code Skill Installer
-# Installs the GEO-first SEO analysis tool for Claude Code
+# GEO-SEO AI CLI Skill Installer
+# Installs the GEO-first SEO analysis tool for Claude/Gemini/Copilot CLI
 # ============================================================
 
 REPO_URL="https://github.com/zubair-trabzada/geo-seo-claude.git"
-CLAUDE_DIR="${HOME}/.claude"
-SKILLS_DIR="${CLAUDE_DIR}/skills"
-AGENTS_DIR="${CLAUDE_DIR}/agents"
+TARGET_CLI="claude"
+CLI_HOME_DIR=""
+SKILLS_DIR=""
+AGENTS_DIR=""
 INSTALL_DIR="${SKILLS_DIR}/geo"
 TEMP_DIR=$(mktemp -d)
 
@@ -29,10 +30,50 @@ NC='\033[0m' # No Color
 print_header() {
     echo ""
     echo -e "${BLUE}╔══════════════════════════════════════════╗${NC}"
-    echo -e "${BLUE}║   GEO-SEO Claude Code Skill Installer    ║${NC}"
+    echo -e "${BLUE}║   GEO-SEO AI CLI Skill Installer         ║${NC}"
     echo -e "${BLUE}║   GEO-First AI Search Optimization       ║${NC}"
     echo -e "${BLUE}╚══════════════════════════════════════════╝${NC}"
     echo ""
+}
+
+print_usage() {
+    cat <<EOF
+Usage: ./install.sh [--cli claude|gemini|copilot] [--base-dir PATH]
+
+Options:
+  --cli       Target CLI platform (default: claude)
+  --base-dir  Override CLI config directory (e.g. ~/.claude, ~/.gemini)
+  --help      Show this help message
+EOF
+}
+
+resolve_cli_dir() {
+    case "$TARGET_CLI" in
+        claude) echo "${HOME}/.claude" ;;
+        gemini) echo "${HOME}/.gemini" ;;
+        copilot) echo "${HOME}/.copilot" ;;
+        *)
+            print_error "Unsupported --cli value: ${TARGET_CLI}"
+            print_usage
+            exit 1
+            ;;
+    esac
+}
+
+has_target_cli() {
+    case "$TARGET_CLI" in
+        claude) command -v claude &> /dev/null ;;
+        gemini) command -v gemini &> /dev/null ;;
+        copilot) has_copilot_cli ;;
+        *) return 1 ;;
+    esac
+}
+
+has_copilot_cli() {
+    command -v copilot &> /dev/null && return 0
+    command -v github-copilot-cli &> /dev/null && return 0
+    command -v gh &> /dev/null && gh copilot --help &> /dev/null && return 0
+    return 1
 }
 
 print_success() {
@@ -58,6 +99,36 @@ cleanup() {
 trap cleanup EXIT
 
 main() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --cli)
+                TARGET_CLI="${2:-}"
+                shift 2
+                ;;
+            --base-dir)
+                CLI_HOME_DIR="${2:-}"
+                shift 2
+                ;;
+            --help|-h)
+                print_usage
+                exit 0
+                ;;
+            *)
+                print_error "Unknown argument: $1"
+                print_usage
+                exit 1
+                ;;
+        esac
+    done
+
+    TARGET_CLI="$(echo "$TARGET_CLI" | tr '[:upper:]' '[:lower:]')"
+    if [ -z "$CLI_HOME_DIR" ]; then
+        CLI_HOME_DIR="$(resolve_cli_dir)"
+    fi
+    SKILLS_DIR="${CLI_HOME_DIR}/skills"
+    AGENTS_DIR="${CLI_HOME_DIR}/agents"
+    INSTALL_DIR="${SKILLS_DIR}/geo"
+
     print_header
 
     # ---- Check Prerequisites ----
@@ -93,11 +164,26 @@ main() {
     fi
     print_success "Python found: $($PYTHON_CMD --version)"
 
-    # Check for Claude Code
-    if ! command -v claude &> /dev/null; then
-        print_warning "Claude Code CLI not found in PATH."
-        echo "  This tool requires Claude Code to function."
-        echo "  Install: npm install -g @anthropic-ai/claude-code"
+    # Check for target CLI
+    CLI_EXECUTABLE="$TARGET_CLI"
+    CLI_DISPLAY_NAME="${TARGET_CLI^}"
+    CLI_INSTALL_HINT="Install your selected CLI and ensure '${CLI_EXECUTABLE}' is in PATH."
+    case "$TARGET_CLI" in
+        claude)
+            CLI_INSTALL_HINT="Install: npm install -g @anthropic-ai/claude-code"
+            ;;
+        gemini)
+            CLI_INSTALL_HINT="Gemini CLI support is experimental; ensure 'gemini' is in PATH or use --base-dir."
+            ;;
+        copilot)
+            CLI_DISPLAY_NAME="Copilot"
+            CLI_INSTALL_HINT="Install GitHub Copilot CLI (or gh with Copilot) and ensure one of: copilot, github-copilot-cli, gh."
+            ;;
+    esac
+    if ! has_target_cli; then
+        print_warning "${CLI_DISPLAY_NAME} CLI not found in PATH."
+        echo "  Installation can continue, but running /geo commands requires ${CLI_DISPLAY_NAME} CLI."
+        echo "  ${CLI_INSTALL_HINT}"
         echo ""
         if [ "$INTERACTIVE" = true ]; then
             read -p "Continue installation anyway? (y/n): " -n 1 -r
@@ -109,7 +195,7 @@ main() {
             print_info "Non-interactive mode — continuing anyway..."
         fi
     else
-        print_success "Claude Code CLI found"
+        print_success "${CLI_DISPLAY_NAME} CLI found"
     fi
 
     # ---- Create Directories ----
@@ -255,11 +341,12 @@ main() {
     echo -e "${GREEN}╚══════════════════════════════════════════╝${NC}"
     echo ""
     echo "  Installed to: ${INSTALL_DIR}"
+    echo "  CLI target:   ${TARGET_CLI} (${CLI_HOME_DIR})"
     echo "  Skills:       ${SKILL_COUNT} sub-skills"
     echo "  Agents:       ${AGENT_COUNT} subagents"
     echo ""
     echo -e "${BLUE}Quick Start:${NC}"
-    echo "  Open Claude Code and try:"
+    echo "  Open ${TARGET_CLI^} CLI and try:"
     echo ""
     echo "    /geo audit https://example.com"
     echo "    /geo quick https://example.com"

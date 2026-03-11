@@ -2,12 +2,13 @@
 set -euo pipefail
 
 # ============================================================
-# GEO-SEO Claude Code Skill Uninstaller
+# GEO-SEO AI CLI Skill Uninstaller
 # ============================================================
 
-CLAUDE_DIR="${HOME}/.claude"
-SKILLS_DIR="${CLAUDE_DIR}/skills"
-AGENTS_DIR="${CLAUDE_DIR}/agents"
+TARGET_CLI="claude"
+CLI_HOME_DIR=""
+SKILLS_DIR=""
+AGENTS_DIR=""
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -15,8 +16,61 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
+print_usage() {
+    cat <<EOF
+Usage: ./uninstall.sh [--cli claude|gemini|copilot] [--base-dir PATH]
+
+Options:
+  --cli       Target CLI platform (default: claude)
+  --base-dir  Override CLI config directory (e.g. ~/.claude, ~/.gemini)
+  --help      Show this help message
+EOF
+}
+
+resolve_cli_dir() {
+    case "$TARGET_CLI" in
+        claude) echo "${HOME}/.claude" ;;
+        gemini) echo "${HOME}/.gemini" ;;
+        copilot) echo "${HOME}/.copilot" ;;
+        *)
+            echo -e "${RED}Unsupported --cli value: ${TARGET_CLI}${NC}"
+            print_usage
+            exit 1
+            ;;
+    esac
+}
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --cli)
+            TARGET_CLI="${2:-}"
+            shift 2
+            ;;
+        --base-dir)
+            CLI_HOME_DIR="${2:-}"
+            shift 2
+            ;;
+        --help|-h)
+            print_usage
+            exit 0
+            ;;
+        *)
+            echo -e "${RED}Unknown argument: $1${NC}"
+            print_usage
+            exit 1
+            ;;
+    esac
+done
+
+TARGET_CLI="$(echo "$TARGET_CLI" | tr '[:upper:]' '[:lower:]')"
+if [ -z "$CLI_HOME_DIR" ]; then
+    CLI_HOME_DIR="$(resolve_cli_dir)"
+fi
+SKILLS_DIR="${CLI_HOME_DIR}/skills"
+AGENTS_DIR="${CLI_HOME_DIR}/agents"
+
 echo ""
-echo -e "${YELLOW}GEO-SEO Claude Code Skill Uninstaller${NC}"
+echo -e "${YELLOW}GEO-SEO ${TARGET_CLI^} CLI Skill Uninstaller${NC}"
 echo ""
 echo "This will remove the following:"
 echo ""

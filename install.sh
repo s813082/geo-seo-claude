@@ -2,14 +2,15 @@
 set -euo pipefail
 
 # ============================================================
-# GEO-SEO Claude Code Skill Installer
-# Installs the GEO-first SEO analysis tool for Claude Code
+# GEO-SEO AI CLI Skill Installer
+# Installs the GEO-first SEO analysis tool for Claude/Gemini/Copilot CLI
 # ============================================================
 
 REPO_URL="https://github.com/zubair-trabzada/geo-seo-claude.git"
-CLAUDE_DIR="${HOME}/.claude"
-SKILLS_DIR="${CLAUDE_DIR}/skills"
-AGENTS_DIR="${CLAUDE_DIR}/agents"
+TARGET_CLI="claude"
+CLI_HOME_DIR=""
+SKILLS_DIR=""
+AGENTS_DIR=""
 INSTALL_DIR="${SKILLS_DIR}/geo"
 TEMP_DIR=$(mktemp -d)
 
@@ -29,10 +30,34 @@ NC='\033[0m' # No Color
 print_header() {
     echo ""
     echo -e "${BLUE}╔══════════════════════════════════════════╗${NC}"
-    echo -e "${BLUE}║   GEO-SEO Claude Code Skill Installer    ║${NC}"
+    echo -e "${BLUE}║   GEO-SEO AI CLI Skill Installer         ║${NC}"
     echo -e "${BLUE}║   GEO-First AI Search Optimization       ║${NC}"
     echo -e "${BLUE}╚══════════════════════════════════════════╝${NC}"
     echo ""
+}
+
+print_usage() {
+    cat <<EOF
+Usage: ./install.sh [--cli claude|gemini|copilot] [--base-dir PATH]
+
+Options:
+  --cli       Target CLI platform (default: claude)
+  --base-dir  Override CLI config directory (e.g. ~/.claude, ~/.gemini)
+  --help      Show this help message
+EOF
+}
+
+resolve_cli_dir() {
+    case "$TARGET_CLI" in
+        claude) echo "${HOME}/.claude" ;;
+        gemini) echo "${HOME}/.gemini" ;;
+        copilot) echo "${HOME}/.copilot" ;;
+        *)
+            print_error "Unsupported --cli value: ${TARGET_CLI}"
+            print_usage
+            exit 1
+            ;;
+    esac
 }
 
 print_success() {
@@ -58,6 +83,36 @@ cleanup() {
 trap cleanup EXIT
 
 main() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --cli)
+                TARGET_CLI="${2:-}"
+                shift 2
+                ;;
+            --base-dir)
+                CLI_HOME_DIR="${2:-}"
+                shift 2
+                ;;
+            --help|-h)
+                print_usage
+                exit 0
+                ;;
+            *)
+                print_error "Unknown argument: $1"
+                print_usage
+                exit 1
+                ;;
+        esac
+    done
+
+    TARGET_CLI="$(echo "$TARGET_CLI" | tr '[:upper:]' '[:lower:]')"
+    if [ -z "$CLI_HOME_DIR" ]; then
+        CLI_HOME_DIR="$(resolve_cli_dir)"
+    fi
+    SKILLS_DIR="${CLI_HOME_DIR}/skills"
+    AGENTS_DIR="${CLI_HOME_DIR}/agents"
+    INSTALL_DIR="${SKILLS_DIR}/geo"
+
     print_header
 
     # ---- Check Prerequisites ----
@@ -93,11 +148,16 @@ main() {
     fi
     print_success "Python found: $($PYTHON_CMD --version)"
 
-    # Check for Claude Code
-    if ! command -v claude &> /dev/null; then
-        print_warning "Claude Code CLI not found in PATH."
-        echo "  This tool requires Claude Code to function."
-        echo "  Install: npm install -g @anthropic-ai/claude-code"
+    # Check for target CLI
+    CLI_COMMAND="$TARGET_CLI"
+    CLI_INSTALL_HINT="Install your selected CLI and ensure '${CLI_COMMAND}' is in PATH."
+    if [ "$TARGET_CLI" = "claude" ]; then
+        CLI_INSTALL_HINT="Install: npm install -g @anthropic-ai/claude-code"
+    fi
+    if ! command -v "$CLI_COMMAND" &> /dev/null; then
+        print_warning "${TARGET_CLI^} CLI not found in PATH."
+        echo "  This tool works best when ${TARGET_CLI^} CLI is available."
+        echo "  ${CLI_INSTALL_HINT}"
         echo ""
         if [ "$INTERACTIVE" = true ]; then
             read -p "Continue installation anyway? (y/n): " -n 1 -r
@@ -109,7 +169,7 @@ main() {
             print_info "Non-interactive mode — continuing anyway..."
         fi
     else
-        print_success "Claude Code CLI found"
+        print_success "${TARGET_CLI^} CLI found"
     fi
 
     # ---- Create Directories ----
@@ -255,11 +315,12 @@ main() {
     echo -e "${GREEN}╚══════════════════════════════════════════╝${NC}"
     echo ""
     echo "  Installed to: ${INSTALL_DIR}"
+    echo "  CLI target:   ${TARGET_CLI} (${CLI_HOME_DIR})"
     echo "  Skills:       ${SKILL_COUNT} sub-skills"
     echo "  Agents:       ${AGENT_COUNT} subagents"
     echo ""
     echo -e "${BLUE}Quick Start:${NC}"
-    echo "  Open Claude Code and try:"
+    echo "  Open ${TARGET_CLI^} CLI and try:"
     echo ""
     echo "    /geo audit https://example.com"
     echo "    /geo quick https://example.com"

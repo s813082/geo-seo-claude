@@ -34,6 +34,19 @@
 curl -fsSL https://raw.githubusercontent.com/zubair-trabzada/geo-seo-claude/main/install.sh | bash
 ```
 
+Install for specific CLI targets:
+
+```bash
+# Claude (default)
+./install.sh --cli claude
+
+# Gemini CLI
+./install.sh --cli gemini
+
+# Copilot CLI
+./install.sh --cli copilot
+```
+
 ### Manual Install
 
 ```bash
@@ -45,7 +58,7 @@ cd geo-seo-claude
 ### Requirements
 
 - Python 3.8+
-- Claude Code CLI
+- Claude CLI / Gemini CLI / Copilot CLI
 - Git
 - Optional: Playwright (for screenshots)
 
@@ -53,7 +66,7 @@ cd geo-seo-claude
 
 ## Commands
 
-Open Claude Code and use these commands:
+Open your selected AI CLI and use these commands:
 
 | Command | What It Does |
 |---------|-------------|
@@ -188,6 +201,8 @@ Generates professional GEO reports in markdown or PDF format. PDF reports includ
 Or manually:
 ```bash
 rm -rf ~/.claude/skills/geo ~/.claude/skills/geo-* ~/.claude/agents/geo-*.md
+rm -rf ~/.gemini/skills/geo ~/.gemini/skills/geo-* ~/.gemini/agents/geo-*.md
+rm -rf ~/.copilot/skills/geo ~/.copilot/skills/geo-* ~/.copilot/agents/geo-*.md
 ```
 
 ---

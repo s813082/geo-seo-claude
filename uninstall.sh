@@ -18,7 +18,7 @@ NC='\033[0m'
 
 print_usage() {
     cat <<EOF
-Usage: ./uninstall.sh [--cli claude|gemini|copilot] [--base-dir PATH]
+Usage: ./uninstall.sh [--cli claude|gemini] [--base-dir PATH]
 
 Options:
   --cli       Target CLI platform (default: claude)
@@ -31,7 +31,6 @@ resolve_cli_dir() {
     case "$TARGET_CLI" in
         claude) echo "${HOME}/.claude" ;;
         gemini) echo "${HOME}/.gemini" ;;
-        copilot) echo "${HOME}/.copilot" ;;
         *)
             echo -e "${RED}Unsupported --cli value: ${TARGET_CLI}${NC}"
             print_usage
@@ -83,6 +82,9 @@ done
 for agent_file in "$AGENTS_DIR"/geo-*.md; do
     [ -f "$agent_file" ] && echo "  → ${agent_file}"
 done
+if [ "$TARGET_CLI" = "gemini" ] && [ -d "$CLI_HOME_DIR/commands/geo" ]; then
+    echo "  → ${CLI_HOME_DIR}/commands/geo/"
+fi
 
 echo ""
 read -p "Are you sure you want to uninstall? (y/n): " -n 1 -r
@@ -118,6 +120,12 @@ for agent_file in "$AGENTS_DIR"/geo-*.md; do
         echo -e "${GREEN}✓ Removed ${agent_name}${NC}"
     fi
 done
+
+# Remove Gemini commands
+if [ "$TARGET_CLI" = "gemini" ] && [ -d "$CLI_HOME_DIR/commands/geo" ]; then
+    rm -rf "$CLI_HOME_DIR/commands/geo"
+    echo -e "${GREEN}✓ Removed Gemini custom commands${NC}"
+fi
 
 echo ""
 echo -e "${GREEN}GEO-SEO skill has been uninstalled.${NC}"

@@ -3,7 +3,7 @@ set -euo pipefail
 
 # ============================================================
 # GEO-SEO AI CLI Skill Installer
-# Installs the GEO-first SEO analysis tool for Claude/Gemini/Copilot CLI
+# Installs the GEO-first SEO analysis tool for Claude/Gemini CLI
 # ============================================================
 
 REPO_URL="https://github.com/zubair-trabzada/geo-seo-claude.git"
@@ -11,6 +11,7 @@ TARGET_CLI="claude"
 CLI_HOME_DIR=""
 SKILLS_DIR=""
 AGENTS_DIR=""
+COMMANDS_DIR=""
 INSTALL_DIR="${SKILLS_DIR}/geo"
 TEMP_DIR=$(mktemp -d)
 
@@ -38,7 +39,7 @@ print_header() {
 
 print_usage() {
     cat <<EOF
-Usage: ./install.sh [--cli claude|gemini|copilot] [--base-dir PATH]
+Usage: ./install.sh [--cli claude|gemini] [--base-dir PATH]
 
 Options:
   --cli       Target CLI platform (default: claude)
@@ -51,7 +52,6 @@ resolve_cli_dir() {
     case "$TARGET_CLI" in
         claude) echo "${HOME}/.claude" ;;
         gemini) echo "${HOME}/.gemini" ;;
-        copilot) echo "${HOME}/.copilot" ;;
         *)
             print_error "Unsupported --cli value: ${TARGET_CLI}"
             print_usage
@@ -64,16 +64,8 @@ has_target_cli() {
     case "$TARGET_CLI" in
         claude) command -v claude &> /dev/null ;;
         gemini) command -v gemini &> /dev/null ;;
-        copilot) has_copilot_cli ;;
         *) return 1 ;;
     esac
-}
-
-has_copilot_cli() {
-    command -v copilot &> /dev/null && return 0
-    command -v github-copilot-cli &> /dev/null && return 0
-    command -v gh &> /dev/null && gh copilot --help &> /dev/null && return 0
-    return 1
 }
 
 print_success() {
@@ -127,6 +119,7 @@ main() {
     fi
     SKILLS_DIR="${CLI_HOME_DIR}/skills"
     AGENTS_DIR="${CLI_HOME_DIR}/agents"
+    COMMANDS_DIR="${CLI_HOME_DIR}/commands"
     INSTALL_DIR="${SKILLS_DIR}/geo"
 
     print_header
@@ -169,7 +162,6 @@ main() {
     case "$TARGET_CLI" in
         claude) CLI_DISPLAY_NAME="Claude" ;;
         gemini) CLI_DISPLAY_NAME="Gemini" ;;
-        copilot) CLI_DISPLAY_NAME="Copilot" ;;
         *) CLI_DISPLAY_NAME="$(echo "${TARGET_CLI:0:1}" | tr '[:lower:]' '[:upper:]')${TARGET_CLI:1}" ;;
     esac
     CLI_INSTALL_HINT="Install your selected CLI and ensure '${CLI_EXECUTABLE}' is in PATH."
@@ -178,11 +170,7 @@ main() {
             CLI_INSTALL_HINT="Install: npm install -g @anthropic-ai/claude-code"
             ;;
         gemini)
-            CLI_INSTALL_HINT="Gemini CLI support is experimental; ensure 'gemini' is in PATH or use --base-dir."
-            ;;
-        copilot)
-            CLI_DISPLAY_NAME="Copilot"
-            CLI_INSTALL_HINT="Install GitHub Copilot CLI (or gh with Copilot) and ensure one of: copilot, github-copilot-cli, gh."
+            CLI_INSTALL_HINT="Install: https://github.com/google-gemini/gemini-cli"
             ;;
     esac
     if ! has_target_cli; then
@@ -297,6 +285,18 @@ main() {
         print_success "Hooks installed → ${INSTALL_DIR}/hooks/"
     fi
 
+    # ---- Install Gemini Commands ----
+    if [ "$TARGET_CLI" = "gemini" ]; then
+        print_info "Installing Gemini custom commands..."
+        if [ -d "$SOURCE_DIR/gemini/commands" ]; then
+            mkdir -p "$COMMANDS_DIR"
+            cp -r "$SOURCE_DIR/gemini/commands/"* "$COMMANDS_DIR/"
+            print_success "Gemini commands installed → ${COMMANDS_DIR}/"
+        else
+            print_warning "Gemini commands source directory not found in ${SOURCE_DIR}/gemini/commands"
+        fi
+    fi
+
     # ---- Install Python Dependencies ----
     print_info "Installing Python dependencies..."
 
@@ -353,11 +353,18 @@ main() {
     echo -e "${BLUE}Quick Start:${NC}"
     echo "  Open ${CLI_DISPLAY_NAME} CLI and try:"
     echo ""
-    echo "    /geo audit https://example.com"
-    echo "    /geo quick https://example.com"
-    echo "    /geo citability https://example.com/blog/article"
-    echo "    /geo crawlers https://example.com"
-    echo "    /geo report https://example.com"
+    if [ "$TARGET_CLI" = "gemini" ]; then
+        echo "    /geo:audit https://example.com"
+        echo "    /geo:quick https://example.com"
+        echo "    /geo:report https://example.com"
+        echo "    Or simply use Agent Skills: \"幫我分析 https://example.com 的 GEO\""
+    else
+        echo "    /geo audit https://example.com"
+        echo "    /geo quick https://example.com"
+        echo "    /geo citability https://example.com/blog/article"
+        echo "    /geo crawlers https://example.com"
+        echo "    /geo report https://example.com"
+    fi
     echo ""
     echo -e "${BLUE}Available Commands:${NC}"
     echo "    /geo audit <url>      Full GEO + SEO audit"

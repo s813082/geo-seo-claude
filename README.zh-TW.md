@@ -41,12 +41,9 @@ curl -fsSL https://raw.githubusercontent.com/zubair-trabzada/geo-seo-claude/main
 
 # Gemini CLI
 ./install.sh --cli gemini
-
-# Copilot CLI
-./install.sh --cli copilot
 ```
 
-> 注意：Gemini CLI 支援包括專門的 Agent Skills 和自定義指令支援。為了在 Gemini 上獲得最佳效果，請確保將 `gemini/commands/geo` 資料夾複製到 `~/.gemini/commands/`。
+> 注意：Gemini CLI 支援包括專門的 **Agent Skills** 和 **自定義指令 (Custom Command)** 快捷鍵。
 
 ### 手動安裝
 
@@ -59,7 +56,7 @@ cd geo-seo-claude
 ### 需求環境
 
 - Python 3.8+
-- Claude CLI / Gemini CLI / Copilot CLI
+- Claude CLI / Gemini CLI
 - Git
 - 選配：Playwright（用於截圖）
 
@@ -86,16 +83,17 @@ cd geo-seo-claude
 
 ---
 
-### Gemini CLI 使用方式 (實驗性)
+### Gemini CLI 使用方式 (進階強化)
 
-Gemini CLI 使用者可以利用 **Agent Skills** 和 **自定義指令 (Custom Commands)**：
+Gemini CLI 使用者可以利用 **Agent Skills** 和 **自定義指令 (Custom Command)** 快捷鍵：
 
-1. **Agent Skills (直接提問)**：Gemini CLI 利用 Agent Skills 進行複雜的編配。只需要求 Gemini 代理執行 GEO 任務：
-   - 「姊姊，幫我對 `https://example.com` 做完整的 GEO Audit。」
-   - "Analyze the AI citability of `https://example.com`."
+1. **Agent Skills (直接提問)**：Gemini CLI 利用 Agent Skills 進行複雜的編配。您可以利用 `@` 符號直接餵入網址或檔案內容：
+   - 「幫我對 `@https://example.com` 做完整的 GEO Audit。」
+   - 「姊姊，分析一下 `@README.md` 的 AI 引用就緒度。」
+   - 「這份 `@GEO-AUDIT-REPORT.md` 有什麼改進建議嗎？」
 
-2. **自定義指令 (捷徑)**：
-   對於進階使用者，Gemini CLI 支援命名空間的自定義指令。確保將 `gemini/commands/geo` 資料夾複製到 `~/.gemini/commands/` 以便使用：
+2. **自定義指令 (快捷鍵)**：
+   安裝程式會自動設定命名空間的自定義指令。輸入 `/geo:` 即可看到選項：
    - `/geo:audit <url>` — 完整 GEO + SEO 審核
    - `/geo:quick <url>` — 60 秒快照
    - `/geo:crawlers <url>` — AI 爬蟲存取檢查

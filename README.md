@@ -46,12 +46,9 @@ Install for specific CLI targets:
 
 # Gemini CLI
 ./install.sh --cli gemini
-
-# Copilot CLI
-./install.sh --cli copilot
 ```
 
-> Note: Gemini CLI support includes specialized Agent Skills and custom command support. For best results on Gemini, ensure you copy the `gemini/commands/geo` folder to `~/.gemini/commands/`.
+> Note: Gemini CLI support includes specialized **Agent Skills** and **Custom Command** shortcuts.
 
 ### Manual Install
 
@@ -64,7 +61,7 @@ cd geo-seo-claude
 ### Requirements
 
 - Python 3.8+
-- Claude CLI / Gemini CLI / Copilot CLI
+- Claude CLI / Gemini CLI
 - Git
 - Optional: Playwright (for screenshots)
 
@@ -91,16 +88,17 @@ Open your selected AI CLI and use these commands:
 
 ---
 
-### Gemini CLI Usage (Experimental)
+### Gemini CLI Usage (Enhanced)
 
-Gemini CLI users can leverage both **Agent Skills** and **Custom Commands**:
+Gemini CLI users can leverage both **Agent Skills** and **Custom Command** shortcuts:
 
-1. **Agent Skills (Direct Prompting)**: Gemini CLI utilizes Agent Skills for complex orchestration. Simply ask the Gemini agent to perform a GEO task:
-   - "姊姊，幫我對 `https://example.com` 做完整的 GEO Audit。"
-   - "Analyze the AI citability of `https://example.com`."
+1. **Agent Skills (Direct Prompting)**: Simply ask the Gemini agent to perform a GEO task. You can use the `@` symbol to provide context from files or URLs:
+   - "幫我對 `@https://example.com` 做完整的 GEO Audit。"
+   - "Analyze the AI citability of `@README.md`."
+   - "姊姊，這份 `@GEO-AUDIT-REPORT.md` 有什麼改進空間嗎？"
 
 2. **Custom Commands (Shortcuts)**:
-   For power users, Gemini CLI supports namespaced custom commands. Ensure you copy the `gemini/commands/geo` folder to `~/.gemini/commands/` to use:
+   The installer automatically sets up namespaced shortcuts. Type `/geo:` to see options:
    - `/geo:audit <url>` — Full GEO + SEO audit
    - `/geo:quick <url>` — 60-second snapshot
    - `/geo:crawlers <url>` — AI crawler access check

@@ -9,7 +9,13 @@ description: >
   client-ready GEO report generation. Use when user says "geo", "seo", "audit",
   "AI search", "AI visibility", "optimize", "citability", "llms.txt", "schema",
   "brand mentions", "GEO report", or any URL for analysis.
-allowed-tools: Read, Grep, Glob, Bash, WebFetch, Write
+tools:
+  - read_file
+  - grep_search
+  - glob
+  - run_shell_command
+  - web_fetch
+  - write_file
 ---
 
 # GEO-SEO Analysis Tool — Claude Code Skill (February 2026)

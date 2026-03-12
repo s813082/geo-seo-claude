@@ -1,0 +1,2 @@
+description = "60-second GEO visibility snapshot"
+prompt = "Provide a high-level 60-second GEO visibility snapshot for {{args}}. Focus on key citability signals, brand mentions, and platform readiness."

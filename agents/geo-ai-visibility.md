@@ -1,11 +1,16 @@
 ---
-updated: 2026-02-18
 name: geo-ai-visibility
 description: >
   GEO specialist analyzing AI search visibility: citability scoring, AI crawler
   access, llms.txt compliance, and brand mention presence across AI-cited platforms.
   Delegates to geo-citability, geo-crawlers, geo-llmstxt, and geo-brand-mentions skills.
-allowed-tools: Read, Bash, WebFetch, Write, Glob, Grep
+tools:
+  - read_file
+  - run_shell_command
+  - web_fetch
+  - write_file
+  - glob
+  - grep_search
 ---
 
 # GEO AI Visibility Agent

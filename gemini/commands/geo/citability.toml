@@ -1,0 +1,2 @@
+description = "Score content for AI citation readiness"
+prompt = "Analyze the content on {{args}} for AI citation readiness. Score passages based on length, factual density, and direct answer patterns."

@@ -166,7 +166,12 @@ main() {
 
     # Check for target CLI
     CLI_EXECUTABLE="$TARGET_CLI"
-    CLI_DISPLAY_NAME="${TARGET_CLI^}"
+    case "$TARGET_CLI" in
+        claude) CLI_DISPLAY_NAME="Claude" ;;
+        gemini) CLI_DISPLAY_NAME="Gemini" ;;
+        copilot) CLI_DISPLAY_NAME="Copilot" ;;
+        *) CLI_DISPLAY_NAME="$(echo "${TARGET_CLI:0:1}" | tr '[:lower:]' '[:upper:]')${TARGET_CLI:1}" ;;
+    esac
     CLI_INSTALL_HINT="Install your selected CLI and ensure '${CLI_EXECUTABLE}' is in PATH."
     case "$TARGET_CLI" in
         claude)
@@ -346,7 +351,7 @@ main() {
     echo "  Agents:       ${AGENT_COUNT} subagents"
     echo ""
     echo -e "${BLUE}Quick Start:${NC}"
-    echo "  Open ${TARGET_CLI^} CLI and try:"
+    echo "  Open ${CLI_DISPLAY_NAME} CLI and try:"
     echo ""
     echo "    /geo audit https://example.com"
     echo "    /geo quick https://example.com"

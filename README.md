@@ -47,7 +47,7 @@ Install for specific CLI targets:
 ./install.sh --cli copilot
 ```
 
-> Note: Gemini CLI support is currently experimental. If your CLI uses a custom config path, use `--base-dir`.
+> Note: Gemini CLI support includes specialized Agent Skills and custom command support. For best results on Gemini, ensure you copy the `gemini/commands/geo` folder to `~/.gemini/commands/`.
 
 ### Manual Install
 
@@ -84,6 +84,24 @@ Open your selected AI CLI and use these commands:
 | `/geo content <url>` | Content quality & E-E-A-T assessment |
 | `/geo report <url>` | Generate client-ready GEO report |
 | `/geo report-pdf` | Generate professional PDF report with charts & visualizations |
+
+---
+
+### Gemini CLI Usage (Experimental)
+
+Gemini CLI users can leverage both **Agent Skills** and **Custom Commands**:
+
+1. **Agent Skills (Direct Prompting)**: Gemini CLI utilizes Agent Skills for complex orchestration. Simply ask the Gemini agent to perform a GEO task:
+   - "姊姊，幫我對 `https://example.com` 做完整的 GEO Audit。"
+   - "Analyze the AI citability of `https://example.com`."
+
+2. **Custom Commands (Shortcuts)**:
+   For power users, Gemini CLI supports namespaced custom commands. Ensure you copy the `gemini/commands/geo` folder to `~/.gemini/commands/` to use:
+   - `/geo:audit <url>` — Full GEO + SEO audit
+   - `/geo:quick <url>` — 60-second snapshot
+   - `/geo:crawlers <url>` — AI crawler access check
+   - `/geo:citability <url>` — Citation readiness score
+   - `/geo:report <url>` — Client-ready report
 
 ---
 

@@ -1,0 +1,2 @@
+description = "Check AI crawler access (robots.txt analysis)"
+prompt = "Analyze the robots.txt and sitemap.xml of {{args}} specifically for AI crawler access (GPTBot, PerplexityBot, ClaudeBot, etc.). Provide allow/block recommendations."

@@ -1,11 +1,16 @@
 ---
-updated: 2026-02-18
 name: geo-content
 description: >
   Content quality specialist evaluating E-E-A-T signals (Experience, Expertise,
   Authoritativeness, Trustworthiness), content depth, readability, AI content
   detection, and topical authority.
-allowed-tools: Read, Bash, WebFetch, Write, Glob, Grep
+tools:
+  - read_file
+  - run_shell_command
+  - web_fetch
+  - write_file
+  - glob
+  - grep_search
 ---
 
 # GEO Content Quality Agent

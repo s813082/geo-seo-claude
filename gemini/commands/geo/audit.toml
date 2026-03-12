@@ -1,0 +1,2 @@
+description = "Full GEO + SEO audit for a website"
+prompt = "Perform a comprehensive GEO (Generative Engine Optimization) and SEO audit for {{args}}. Use the specialized geo agents (visibility, platform, technical, content, schema) and the geo-audit skill to synthesize a final report."

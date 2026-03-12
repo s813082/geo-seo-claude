@@ -1,0 +1,2 @@
+description = "Generate client-ready GEO report"
+prompt = "Generate a presentation-ready GEO audit report for {{args}} based on all available data and analysis. Include prioritized action items and a executive summary."

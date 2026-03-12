@@ -1,11 +1,16 @@
 ---
-updated: 2026-02-18
 name: geo-schema
 description: >
   Schema markup specialist detecting, validating, and generating structured data
   (JSON-LD preferred). Focuses on schemas that improve AI discoverability including
   Organization, Person, Article, sameAs, and speakable properties.
-allowed-tools: Read, Bash, WebFetch, Write, Glob, Grep
+tools:
+  - read_file
+  - run_shell_command
+  - web_fetch
+  - write_file
+  - glob
+  - grep_search
 ---
 
 # GEO Schema & Structured Data Agent

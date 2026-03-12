@@ -1,11 +1,16 @@
 ---
-updated: 2026-02-18
 name: geo-technical
 description: >
   Technical SEO specialist analyzing crawlability, indexability, security,
   URL structure, mobile optimization, Core Web Vitals (INP replaces FID),
   server-side rendering, and JavaScript dependency.
-allowed-tools: Read, Bash, WebFetch, Write, Glob, Grep
+tools:
+  - read_file
+  - run_shell_command
+  - web_fetch
+  - write_file
+  - glob
+  - grep_search
 ---
 
 # GEO Technical SEO Agent

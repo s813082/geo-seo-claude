@@ -95,7 +95,7 @@ Gemini CLI users can leverage both **Agent Skills** and **Custom Command** short
 1. **Agent Skills (Direct Prompting)**: Simply ask the Gemini agent to perform a GEO task. You can use the `@` symbol to provide context from files or URLs:
    - "幫我對 `@https://example.com` 做完整的 GEO Audit。"
    - "Analyze the AI citability of `@README.md`."
-   - "姊姊，這份 `@GEO-AUDIT-REPORT.md` 有什麼改進空間嗎？"
+   - "這份 `@GEO-AUDIT-REPORT.md` 有什麼改進空間嗎？"
 
 2. **Custom Commands (Shortcuts)**:
    The installer automatically sets up namespaced shortcuts. Type `/geo:` to see options:
@@ -221,14 +221,12 @@ Generates professional GEO reports in markdown or PDF format. PDF reports includ
 
 # Or target a specific CLI home
 ./uninstall.sh --cli gemini
-./uninstall.sh --cli copilot
 ```
 
 Or manually:
 ```bash
 rm -rf ~/.claude/skills/geo ~/.claude/skills/geo-* ~/.claude/agents/geo-*.md
 rm -rf ~/.gemini/skills/geo ~/.gemini/skills/geo-* ~/.gemini/agents/geo-*.md
-rm -rf ~/.copilot/skills/geo ~/.copilot/skills/geo-* ~/.copilot/agents/geo-*.md
 ```
 
 ---

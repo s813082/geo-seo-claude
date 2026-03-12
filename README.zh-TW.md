@@ -89,7 +89,7 @@ Gemini CLI 使用者可以利用 **Agent Skills** 和 **自定義指令 (Custom 
 
 1. **Agent Skills (直接提問)**：Gemini CLI 利用 Agent Skills 進行複雜的編配。您可以利用 `@` 符號直接餵入網址或檔案內容：
    - 「幫我對 `@https://example.com` 做完整的 GEO Audit。」
-   - 「姊姊，分析一下 `@README.md` 的 AI 引用就緒度。」
+   - 「分析一下 `@README.md` 的 AI 引用就緒度。」
    - 「這份 `@GEO-AUDIT-REPORT.md` 有什麼改進建議嗎？」
 
 2. **自定義指令 (快捷鍵)**：
@@ -216,14 +216,12 @@ geo-seo-claude/
 
 # 或針對特定 CLI 目錄
 ./uninstall.sh --cli gemini
-./uninstall.sh --cli copilot
 ```
 
 或手動卸載：
 ```bash
 rm -rf ~/.claude/skills/geo ~/.claude/skills/geo-* ~/.claude/agents/geo-*.md
 rm -rf ~/.gemini/skills/geo ~/.gemini/skills/geo-* ~/.gemini/agents/geo-*.md
-rm -rf ~/.copilot/skills/geo ~/.copilot/skills/geo-* ~/.copilot/agents/geo-*.md
 ```
 
 ---

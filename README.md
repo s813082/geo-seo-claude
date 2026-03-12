@@ -11,6 +11,10 @@
   AI search is eating traditional search. This tool optimizes for where traffic is going, not where it was.
 </p>
 
+<p align="center">
+  <a href="README.zh-TW.md">繁體中文版 (Traditional Chinese)</a>
+</p>
+
 ---
 
 ## Why GEO Matters (2026)
